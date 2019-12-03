@@ -1,5 +1,7 @@
 from typing import List
 
+Program = List[int]
+
 """
 An Intcode program is a list of integers separated by commas (like 1,0,0,3,99). To run one, start by looking at the
 first integer (called position 0). Here, you will find an opcode - either 1, 2, or 99. The opcode indicates what to do;
@@ -53,54 +55,55 @@ Here are the initial and final states of a few more small programs:
 2,4,4,5,99,0 becomes 2,4,4,5,99,9801 (99 * 99 = 9801).
 1,1,1,4,99,5,6,0,99 becomes 30,1,1,4,2,5,6,0,99.
 """
-def runIntCode(program : List[int] ) -> List[int] :
-    program_copy = list(program)
+def run_int_code(program : Program) -> Program :
     idx = 0
     stop = False
 
-    while idx < len(program_copy) and not stop:
-        op = program_copy[idx]
+    while idx < len(program) and not stop:
+        op = program[idx]
         if op == 99:
             stop = True
         else:
-            lh = program_copy[ program_copy[idx + 1] ]
-            rh = program_copy[ program_copy[idx + 2] ]
-            target = program_copy[idx + 3]
+            lh = program[ program[idx + 1] ]
+            rh = program[ program[idx + 2] ]
+            target = program[idx + 3]
             if op == 1:
-                program_copy[target] = lh + rh
+                program[target] = lh + rh
             elif op == 2:
-                program_copy[target] = lh * rh
+                program[target] = lh * rh
         idx = idx + 4
-    return program_copy
+    return program
 
 
-assert runIntCode([1,0,0,0,99]) == [2,0,0,0,99]
-assert runIntCode([2,3,0,3,99]) == [2,3,0,6,99]
-assert runIntCode([2,4,4,5,99,0]) == [2,4,4,5,99,9801]
-assert runIntCode([1,1,1,4,99,5,6,0,99]) == [30,1,1,4,2,5,6,0,99]
-assert runIntCode([1,9,10,3,2,3,11,0,99,30,40,50]) == [3500,9,10,70,2,3,11,0,99,30,40,50]
+assert run_int_code([1, 0, 0, 0, 99]) == [2, 0, 0, 0, 99]
+assert run_int_code([2, 3, 0, 3, 99]) == [2, 3, 0, 6, 99]
+assert run_int_code([2, 4, 4, 5, 99, 0]) == [2, 4, 4, 5, 99, 9801]
+assert run_int_code([1, 1, 1, 4, 99, 5, 6, 0, 99]) == [30, 1, 1, 4, 2, 5, 6, 0, 99]
+assert run_int_code([1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]) == [3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]
 
 # Once you have a working computer, the first step is to restore the gravity assist program (your puzzle input) to
 # the "1202 program alarm" state it had just before the last computer caught fire. To do this, before running the
 # program, replace position 1 with the value 12 and replace position 2 with the value 2.
 # What value is left at position 0 after the program halts?
+def alarm(program: Program, noun : int = 12, verb : int = 2) -> int:
+    program_copy = program[:]
+    program_copy[1] = noun
+    program_copy[2] = verb
+    run_int_code(program_copy)
+    return program_copy[0]
+
 
 with open('input.txt') as f:
     program = [int(c) for c in f.read().split(',')]
-    program[1] = 12
-    program[2] = 2
-    program_result = runIntCode(program)
-print(program_result[0])
+
+print(alarm(program))
 
 # Find the input noun and verb that cause the program to produce the output 19690720. What is 100 * noun + verb?
 # (For example, if noun=12 and verb=2, the answer would be 1202.)
 
-target_output = 19690720
+TARGET = 19690720
 for noun in range(0,100):
     for verb in range(0,100):
-        program[1] = noun
-        program[2] = verb
-        program_result = runIntCode(program)
-        if program_result[0] == target_output:
-            print(program_result[0])
-            print( 100 * noun + verb )
+        alarm_result = alarm(program, noun, verb)
+        if alarm_result == TARGET:
+            print(100 * noun + verb)
