@@ -59,27 +59,25 @@ def ordered_crossings(wire_1_locs : Locations, wire_2_locs : Locations) -> Locat
     return crossings
 
 def get_locations(wire: Path) -> Locations:
-    current_location = (0, 0)
+    x = y = 0
     locations_visited = list()
-    for travel in wire:
-        travel_direction, travel_distance = travel[0], travel[1]
-        start_x, start_y = current_location[0], current_location[1]
-        if travel_direction == 'R':
-            for i in range(start_x+1, start_x+travel_distance+1):
-                current_location = (i, start_y)
-                locations_visited.append(current_location)
-        elif travel_direction == 'U':
-            for i in range(start_y+1, start_y+travel_distance+1):
-                current_location = (start_x, i)
-                locations_visited.append(current_location)
-        elif travel_direction == 'L':
-            for i in range(start_x-1, start_x-travel_distance-1, -1):
-                current_location = (i, start_y)
-                locations_visited.append(current_location)
-        elif travel_direction == 'D':
-            for i in range(start_y-1, start_y-travel_distance-1, -1):
-                current_location = (start_x, i)
-                locations_visited.append(current_location)
+    for segment in wire:
+        travel_direction, travel_distance = segment[0], segment[1]
+        for _ in range(travel_distance):
+            if travel_direction == 'R':
+                x += 1
+            elif travel_direction == 'L':
+                x -= 1
+            elif travel_direction == 'U':
+                y += 1
+            elif travel_direction == 'D':
+                y -= 1
+            else:
+                raise RuntimeError(f"Bad direction : {travel_direction}")
+
+            current_location = (x, y)
+            locations_visited.append(current_location)
+
     return locations_visited
 
 
