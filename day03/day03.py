@@ -124,11 +124,7 @@ from the first time it visits that position when calculating the total value of 
 locs_a = get_locations(wire_a)
 locs_b = get_locations(wire_b)
 crossings = ordered_crossings(locs_a, locs_b)
-
-distances = list()
-for crossing in crossings:
-    distances.append( locs_a.index(crossing) +locs_b.index(crossing) + 2 )
-
+distances = [locs_a.index(crossing) + locs_b.index(crossing) + 2 for crossing in crossings]
 print(min(distances))
 
 
