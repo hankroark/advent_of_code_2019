@@ -49,14 +49,12 @@ What is the Manhattan distance from the central port to the closest intersection
 def closest_crossing(wire_1 : Path, wire_2 : Path) -> int:
     locations_1 = get_locations(wire_1)
     locations_2 = get_locations(wire_2)
-    crossings = ordered_crossings(locations_1, locations_2)
+    crossings = calc_crossings(locations_1, locations_2)
     distances = manhattan_distances(crossings)
     return min(distances)
 
-def ordered_crossings(wire_1_locs : Locations, wire_2_locs : Locations) -> Locations:
-    set_2 = frozenset(wire_2_locs)
-    crossings = [loc for loc in wire_1_locs if loc in set_2]
-    return crossings
+def calc_crossings(wire_1_locs : Locations, wire_2_locs : Locations) -> Locations:
+    return list(set(wire_1_locs) & set(wire_2_locs))
 
 def get_locations(wire: Path) -> Locations:
     x = y = 0
@@ -123,7 +121,7 @@ from the first time it visits that position when calculating the total value of 
 """
 locs_a = get_locations(wire_a)
 locs_b = get_locations(wire_b)
-crossings = ordered_crossings(locs_a, locs_b)
+crossings = calc_crossings(locs_a, locs_b)
 distances = [locs_a.index(crossing) + locs_b.index(crossing) + 2 for crossing in crossings]
 print(min(distances))
 
