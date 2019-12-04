@@ -2,7 +2,8 @@ from typing import List, Tuple, Set
 
 Move = Tuple[str, int]
 Path = List[Move]
-Locations = List[Tuple[int, int]]
+Point = Tuple[int, int]
+Locations = List[Point]
 
 """
 The wires twist and turn, but the two wires occasionally cross paths. To fix the circuit, you need to find the 
@@ -46,11 +47,15 @@ R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
 U98,R91,D20,R16,D67,R40,U7,R15,U6,R7 = distance 135
 What is the Manhattan distance from the central port to the closest intersection?
 """
-def closest_crossing(wire_1 : Path, wire_2 : Path) -> int:
+def closest_crossing(wire_1 : Path, wire_2 : Path, origin_distance=True) -> int:
     locations_1 = get_locations(wire_1)
     locations_2 = get_locations(wire_2)
     crossings = calc_crossings(locations_1, locations_2)
-    distances = manhattan_distances(crossings)
+    if origin_distance:
+        distances = manhattan_distances(crossings)
+    else:
+        distances = wire_length_distances(locations_1, locations_2, crossings)
+
     return min(distances)
 
 def calc_crossings(wire_1_locs : Locations, wire_2_locs : Locations) -> Locations:
@@ -88,6 +93,9 @@ assert get_locations(short_wire) == locations_short
 def manhattan_distances(points: Locations) -> List[int]:
     return [abs(location[0])+abs(location[1]) for location in points]
 
+def wire_length_distances(wire_1: Locations, wire_2: Locations, crossings: Locations) -> List[int]:
+    return [wire_1.index(crossing) + wire_2.index(crossing) + 2 for crossing in crossings]
+
 
 wire_1 = [('R',75),('D',30),('R',83),('U',83),('L',12),('D',49),('R',71),('U',7),('L',72)]
 wire_2 = [('U',62),('R',66),('U',55),('R',34),('D',71),('R',55),('D',58),('R',83)]
@@ -119,10 +127,6 @@ To do this, calculate the number of steps each wire takes to reach each intersec
 the sum of both wires' steps is lowest. If a wire visits a position on the grid multiple times, use the steps value 
 from the first time it visits that position when calculating the total value of a specific intersection.
 """
-locs_a = get_locations(wire_a)
-locs_b = get_locations(wire_b)
-crossings = calc_crossings(locs_a, locs_b)
-distances = [locs_a.index(crossing) + locs_b.index(crossing) + 2 for crossing in crossings]
-print(min(distances))
+print(closest_crossing(wire_a, wire_b, False))
 
 
