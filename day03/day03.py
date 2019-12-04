@@ -2,7 +2,7 @@ from typing import List, Tuple, Set
 
 Move = Tuple[str, int]
 Path = List[Move]
-Locations = Set[ Tuple[int, int] ]
+Locations = List[Tuple[int, int]]
 
 """
 The wires twist and turn, but the two wires occasionally cross paths. To fix the circuit, you need to find the 
@@ -49,38 +49,43 @@ What is the Manhattan distance from the central port to the closest intersection
 def closest_crossing(wire_1 : Path, wire_2 : Path) -> int:
     locations_1 = get_locations(wire_1)
     locations_2 = get_locations(wire_2)
-    crossings = locations_1.intersection(locations_2)
+    crossings = ordered_crossings(locations_1, locations_2)
     distances = manhattan_distances(crossings)
     return min(distances)
 
+def ordered_crossings(wire_1_locs : Locations, wire_2_locs : Locations) -> Locations:
+    set_2 = frozenset(wire_2_locs)
+    crossings = [loc for loc in wire_1_locs if loc in set_2]
+    return crossings
+
 def get_locations(wire: Path) -> Locations:
     current_location = (0, 0)
-    locations_visited = set()
+    locations_visited = list()
     for travel in wire:
         travel_direction, travel_distance = travel[0], travel[1]
         start_x, start_y = current_location[0], current_location[1]
         if travel_direction == 'R':
             for i in range(start_x+1, start_x+travel_distance+1):
                 current_location = (i, start_y)
-                locations_visited.add(current_location)
+                locations_visited.append(current_location)
         elif travel_direction == 'U':
             for i in range(start_y+1, start_y+travel_distance+1):
                 current_location = (start_x, i)
-                locations_visited.add(current_location)
+                locations_visited.append(current_location)
         elif travel_direction == 'L':
             for i in range(start_x-1, start_x-travel_distance-1, -1):
                 current_location = (i, start_y)
-                locations_visited.add(current_location)
+                locations_visited.append(current_location)
         elif travel_direction == 'D':
             for i in range(start_y-1, start_y-travel_distance-1, -1):
                 current_location = (start_x, i)
-                locations_visited.add(current_location)
+                locations_visited.append(current_location)
     return locations_visited
 
 
 short_wire = [('R',8),('U',5),('L',5),('D',3)]
-locations_short = {(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(8,1),(8,2),(8,3),(8,4),(8,5),
-                   (7,5),(6,5),(5,5),(4,5),(3,5),(3,4),(3,3),(3,2)}
+locations_short = [(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(8,1),(8,2),(8,3),(8,4),(8,5),
+                   (7,5),(6,5),(5,5),(4,5),(3,5),(3,4),(3,3),(3,2)]
 assert get_locations(short_wire) == locations_short
 
 
@@ -111,5 +116,21 @@ wire_a = parse_path(wires[0])
 wire_b = parse_path(wires[1])
 print(closest_crossing(wire_a, wire_b))
 
+"""
+Part 2
+
+To do this, calculate the number of steps each wire takes to reach each intersection; choose the intersection where 
+the sum of both wires' steps is lowest. If a wire visits a position on the grid multiple times, use the steps value 
+from the first time it visits that position when calculating the total value of a specific intersection.
+"""
+locs_a = get_locations(wire_a)
+locs_b = get_locations(wire_b)
+crossings = ordered_crossings(locs_a, locs_b)
+
+distances = list()
+for crossing in crossings:
+    distances.append( locs_a.index(crossing) +locs_b.index(crossing) + 2 )
+
+print(min(distances))
 
 
