@@ -1,9 +1,9 @@
 import os
 import logging
 
-from day04.day04 import day04_get_results
-
 from flask import Flask
+
+from day04.day04 import day04_get_results
 
 # Change the format of messages logged to Stackdriver
 logging.basicConfig(format='%(message)s', level=logging.INFO)
@@ -40,4 +40,9 @@ def day04(start_password, end_password):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+    server_port = os.environ.get('PORT')
+    if server_port is None:
+        print("error: PORT environment variable not set")
+        exit(1)
+
+    app.run(debug=True, port=server_port, host='0.0.0.0')

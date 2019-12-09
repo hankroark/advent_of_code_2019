@@ -1,4 +1,4 @@
-from typing import List, Tuple, Set
+from typing import List, Tuple
 
 Move = Tuple[str, int]
 Path = List[Move]
