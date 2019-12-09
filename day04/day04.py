@@ -1,4 +1,5 @@
 from collections import Counter
+from typing import List
 
 """
 You arrive at the Venus fuel depot only to discover it's protected by a password. The Elves had written the password
@@ -44,10 +45,6 @@ assert is_valid(111111)   # ok for part 1
 assert not is_valid(223450)
 assert not is_valid(123789)
 
-# Your puzzle input is still 240298-784956
-valid_words = [is_valid(password) for password in range(240298, 784956+1)]
-print(sum(valid_words))  # 1150 for Part 1
-
 
 """
 --- Part Two ---
@@ -66,5 +63,13 @@ assert is_valid(112233, exact_pair=True)
 assert not is_valid(123444, exact_pair=True)
 assert is_valid(111122, exact_pair=True)
 
-valid_words = [is_valid(password, exact_pair=True) for password in range(240298, 784956+1)]
-print(sum(valid_words))  # 748 for Part 2
+def day04_get_results(start_password: int, end_password: int) -> List[int]:
+    valid_words_part_1 = sum([is_valid(password, False) for password in range(start_password, end_password + 1)])
+    valid_words_part_2 = sum([is_valid(password, True ) for password in range(start_password, end_password + 1)])
+    return [valid_words_part_1, valid_words_part_2]
+
+
+# Your puzzle input is still 240298-784956
+if __name__ == "__main__":
+    print(day04_get_results(240298, 784956))
+
