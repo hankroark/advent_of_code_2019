@@ -1,5 +1,8 @@
 # Advent of Code 2019
 
+## Deploy this to Cloud Run
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run?dir=src)
+
 ## How to use the APIs
 
 ### Day 04
