@@ -26,7 +26,7 @@ def home():
   to your Google Cloud Platform organization, as well as documentation on how to use the APIs.</p>
   <a href="https://adventofcode.com/2019" target="_blank">Advent of Code 2019 Webside</a><br>
   <a href="https://github.com/hankroark/advent_of_code_2019" target="_blank">API Docs and Source Code by Hank Roark</a><br>
-  <a href="https://cloud.google.com/run/" target="_blank">Google Cloud Run </a>
+  <a href="https://cloud.google.com/run/" target="_blank">Google Cloud Run</a>
  </body>
 </html>
 """
