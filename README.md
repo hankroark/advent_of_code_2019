@@ -9,8 +9,9 @@ All APIs if successful, return a JSON file with the Part 1 and Part 2 answers.
 
 Example JSON will be:
 ```
-{ 'part1': result1,
-  'part2': result2
+{ 
+ 'part1': result1,
+ 'part2': result2
 }
 ```
 
