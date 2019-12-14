@@ -1,8 +1,9 @@
 import os
 import logging
 
-from flask import Flask
+from flask import Flask, request
 
+from day01.fuel_counter import day01_get_results
 from day04.day04 import day04_get_results
 
 # Change the format of messages logged to Stackdriver
@@ -32,11 +33,42 @@ def home():
 """
     return html
 
+
+"""
+Example of use
+curl -i -X POST -H "Content-Type: multipart/form-data" -F "file=@input_fuel_counter.txt" http://localhost:8080/day01
+"""
+@app.route('/day01', methods=['GET', 'POST'])
+def day01():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            return {'error': 'No file part' }
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            return {'error': 'No selected file'}
+        if file:
+            data = [int(s) for s in file.read().splitlines()]
+            results = day01_get_results(data)
+            return {'part1': results[0],
+                    'part2': results[1]}
+    return '''
+    <!doctype html>
+    <title>Upload input File</title>
+    <h1>Upload input File</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    '''
+
 @app.route('/day04/<int:start_password>/<int:end_password>')
 def day04(start_password, end_password):
     results = day04_get_results(start_password, end_password)
-    return { 'part1': results[0],
-             'part2': results[1] }
+    return {'part1': results[0],
+            'part2': results[1]}
 
 
 if __name__ == '__main__':
