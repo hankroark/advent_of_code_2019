@@ -50,50 +50,42 @@ def get_locations(wire: Path) -> Locations:
 
     return locations_visited
 
-
-short_wire = [('R',8),('U',5),('L',5),('D',3)]
-locations_short = [(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(8,1),(8,2),(8,3),(8,4),(8,5),
-                   (7,5),(6,5),(5,5),(4,5),(3,5),(3,4),(3,3),(3,2)]
-assert get_locations(short_wire) == locations_short
-
-
 def manhattan_distances(points: Locations) -> List[int]:
     return [abs(location[0])+abs(location[1]) for location in points]
 
 def wire_length_distances(wire_1: Locations, wire_2: Locations, crossings: Locations) -> List[int]:
     return [wire_1.index(crossing) + wire_2.index(crossing) + 2 for crossing in crossings]
 
-
-wire_1 = [('R',75),('D',30),('R',83),('U',83),('L',12),('D',49),('R',71),('U',7),('L',72)]
-wire_2 = [('U',62),('R',66),('U',55),('R',34),('D',71),('R',55),('D',58),('R',83)]
-assert closest_crossing(wire_1, wire_2) == 159
-
-
 def parse_path(path: str) -> Path:
     steps = path.split(',')
     return [(step[0], int(step[1:])) for step in steps]
 
+def day03_get_results(wire1path: str, wire2path: str) -> Tuple[str, str]:
+    wire_1, wire_2 = parse_path(wire1path), parse_path(wire2path)
+    return closest_crossing(wire_1, wire_2), closest_crossing(wire_1, wire_2, False)
 
-path_1 = 'R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51'
-path_2 = 'U98,R91,D20,R16,D67,R40,U7,R15,U6,R7'
-assert parse_path(path_1) == [('R',98),('U',47),('R',26),('D',63),('R',33),('U',87),('L',62),('D',20),('R',33),('U',53),('R',51)]
-wire_1, wire_2 = parse_path(path_1), parse_path(path_2)
-assert closest_crossing(wire_1, wire_2) == 135
 
-with open('input.txt') as f:
-    wires = f.readlines()
+if __name__ == "__main__":
+    # Tests
+    short_wire = [('R',8),('U',5),('L',5),('D',3)]
+    locations_short = [(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(8,1),(8,2),(8,3),(8,4),(8,5),
+                   (7,5),(6,5),(5,5),(4,5),(3,5),(3,4),(3,3),(3,2)]
+    assert get_locations(short_wire) == locations_short
 
-wire_a = parse_path(wires[0])
-wire_b = parse_path(wires[1])
-print(closest_crossing(wire_a, wire_b))
+    wire_1 = [('R',75),('D',30),('R',83),('U',83),('L',12),('D',49),('R',71),('U',7),('L',72)]
+    wire_2 = [('U',62),('R',66),('U',55),('R',34),('D',71),('R',55),('D',58),('R',83)]
+    assert closest_crossing(wire_1, wire_2) == 159
 
-"""
-Part 2
+    path_1 = 'R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51'
+    path_2 = 'U98,R91,D20,R16,D67,R40,U7,R15,U6,R7'
+    assert parse_path(path_1) == [('R',98),('U',47),('R',26),('D',63),('R',33),('U',87),('L',62),('D',20),('R',33),('U',53),('R',51)]
+    wire_1, wire_2 = parse_path(path_1), parse_path(path_2)
+    assert closest_crossing(wire_1, wire_2) == 135
 
-To do this, calculate the number of steps each wire takes to reach each intersection; choose the intersection where 
-the sum of both wires' steps is lowest. If a wire visits a position on the grid multiple times, use the steps value 
-from the first time it visits that position when calculating the total value of a specific intersection.
-"""
-print(closest_crossing(wire_a, wire_b, False))
+    # Actual problem, Part 1
+    with open('input.txt') as f:
+        wires = f.readlines()
+
+    print(day03_get_results(wires[0], wires[1]))
 
 

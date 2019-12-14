@@ -5,6 +5,7 @@ from flask import Flask, request
 
 from day01.fuel_counter import day01_get_results
 from day02.day02 import day02_get_results
+from day03.day03 import day03_get_results
 from day04.day04 import day04_get_results
 
 # Change the format of messages logged to Stackdriver
@@ -68,6 +69,12 @@ def day01():
 @app.route('/day02/<string:program>/<int:target>')
 def day02(program, target):
     results = day02_get_results(program, target)
+    return {'part1': results[0],
+            'part2': results[1]}
+
+@app.route('/day03/<string:wire1path>/<string:wire2path>')
+def day03(wire1path, wire2path):
+    results = day03_get_results(wire1path, wire2path)
     return {'part1': results[0],
             'part2': results[1]}
 
