@@ -92,18 +92,28 @@ def alarm(program: Program, noun : int = 12, verb : int = 2) -> int:
     run_int_code(program_copy)
     return program_copy[0]
 
+def parse_program(program_string):
+    return [int(c) for c in program_string.split(',')]
 
-with open('input.txt') as f:
-    program = [int(c) for c in f.read().split(',')]
+def input_for_target(program, target):
+    for noun in range(0, 100):
+        for verb in range(0, 100):
+            alarm_result = alarm(program, noun, verb)
+            if alarm_result == target:
+                return 100*noun+verb
 
-print(alarm(program))
+def day02_get_results(program_string, target):
+    program = parse_program(program_string)
+    part1 = alarm(program)
+    part2 = input_for_target(program, target)
+    return part1, part2
 
-# Find the input noun and verb that cause the program to produce the output 19690720. What is 100 * noun + verb?
-# (For example, if noun=12 and verb=2, the answer would be 1202.)
 
-TARGET = 19690720
-for noun in range(0,100):
-    for verb in range(0,100):
-        alarm_result = alarm(program, noun, verb)
-        if alarm_result == TARGET:
-            print(100 * noun + verb)
+if __name__ == "__main__":
+    with open('input.txt') as f:
+        program_string = f.read()
+
+    # Find the input noun and verb that cause the program to produce the output 19690720. What is 100 * noun + verb?
+    # (For example, if noun=12 and verb=2, the answer would be 1202.)
+    TARGET = 19690720
+    print(day02_get_results(program_string, TARGET))

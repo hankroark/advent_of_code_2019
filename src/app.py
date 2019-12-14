@@ -4,6 +4,7 @@ import logging
 from flask import Flask, request
 
 from day01.fuel_counter import day01_get_results
+from day02.day02 import day02_get_results
 from day04.day04 import day04_get_results
 
 # Change the format of messages logged to Stackdriver
@@ -63,6 +64,12 @@ def day01():
       <input type=submit value=Upload>
     </form>
     '''
+
+@app.route('/day02/<string:program>/<int:target>')
+def day02(program, target):
+    results = day02_get_results(program, target)
+    return {'part1': results[0],
+            'part2': results[1]}
 
 @app.route('/day04/<int:start_password>/<int:end_password>')
 def day04(start_password, end_password):
